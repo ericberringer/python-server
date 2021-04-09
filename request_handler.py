@@ -1,9 +1,9 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from animals import get_all_animals, get_single_animal, create_animal
-from locations import get_all_locations, get_single_location, create_location
-from employees import get_all_employees, get_single_employee, create_employee
-from customers import get_all_customers, get_single_customer, create_customer
+from animals import get_all_animals, get_single_animal, create_animal, delete_animal
+from locations import get_all_locations, get_single_location, create_location, delete_location
+from employees import get_all_employees, get_single_employee, create_employee, delete_employee
+from customers import get_all_customers, get_single_customer, create_customer, delete_customer
 import json
 
 
@@ -74,27 +74,58 @@ class HandleRequests(BaseHTTPRequestHandler):
         # function next.
         if resource == "animals":
             new_animal = create_animal(post_body)
+            # Encode the new animal and send in response
+            self.wfile.write(f"{new_animal}".encode())
 
-        # Encode the new animal and send in response
-        self.wfile.write(f"{new_animal}".encode())
 
         if resource == "customers":
             new_customer = create_customer(post_body)
+            # Encode the new customer and send in response
+            self.wfile.write(f"{new_customer}".encode())
 
-        # Encode the new customer and send in response
-        self.wfile.write(f"{new_customer}".encode())
 
         if resource == "employees":
             new_employee = create_employee(post_body)
+            # Encode the new employee and send in response
+            self.wfile.write(f"{new_employee}".encode())
 
-        # Encode the new employee and send in response
-        self.wfile.write(f"{new_employee}".encode())
 
         if resource == "locations":
             new_location = create_location(post_body)
+            # Encode the new location and send in response
+            self.wfile.write(f"{new_location}".encode())
 
-        # Encode the new location and send in response
-        self.wfile.write(f"{new_location}".encode())
+
+
+    def do_DELETE(self):
+        # Set a 204 response code
+        self._set_headers(204)
+
+        # Parse the URL
+        (resource, id) = self.parse_url(self.path)
+
+        # Delete a single animal from the list
+        if resource == "animals":
+            delete_animal(id)
+            # Encode the new animal and send in response
+            self.wfile.write("".encode())
+
+        if resource == "customers":
+            delete_customer(id)
+            # Encode the new customer and send in response
+            self.wfile.write("".encode())
+
+        if resource == "employees":
+            delete_employee(id)
+            # Encode the new employee and send in response
+            self.wfile.write("".encode())
+
+        if resource == "locations":
+            delete_location(id)
+            # Encode the new location and send in response
+            self.wfile.write("".encode())
+
+
 
     def parse_url(self, path):
         # Just like splitting a string in JavaScript. If the
