@@ -1,10 +1,9 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from animals import get_all_animals
-from animals import get_all_animals, get_single_animal
-from animals import get_all_locations, get_single_location
-from animals import get_all_employees, get_single_employee
-from animals import get_all_customers, get_single_customer
+from animals import get_all_animals, get_single_animal, create_animal
+from locations import get_all_locations, get_single_location, create_location
+from employees import get_all_employees, get_single_employee, create_employee
+from customers import get_all_customers, get_single_customer, create_customer
 import json
 
 
@@ -66,6 +65,9 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         # Initialize new animal
         new_animal = None
+        new_customer = None
+        new_employee = None
+        new_location = None
 
         # Add a new animal to the list. Don't worry about
         # the orange squiggle, you'll define the create_animal
@@ -75,6 +77,24 @@ class HandleRequests(BaseHTTPRequestHandler):
 
         # Encode the new animal and send in response
         self.wfile.write(f"{new_animal}".encode())
+
+        if resource == "customers":
+            new_customer = create_customer(post_body)
+
+        # Encode the new customer and send in response
+        self.wfile.write(f"{new_customer}".encode())
+
+        if resource == "employees":
+            new_employee = create_employee(post_body)
+
+        # Encode the new employee and send in response
+        self.wfile.write(f"{new_employee}".encode())
+
+        if resource == "locations":
+            new_location = create_location(post_body)
+
+        # Encode the new location and send in response
+        self.wfile.write(f"{new_location}".encode())
 
     def parse_url(self, path):
         # Just like splitting a string in JavaScript. If the
