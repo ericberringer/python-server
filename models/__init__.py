@@ -1,5 +1,5 @@
 from .animal import Animal
-from .animal import Customer
-from .animal import Employee
-from .animal import Location
+from .customer import Customer
+from .employee import Employee
+from .location import Location
 
