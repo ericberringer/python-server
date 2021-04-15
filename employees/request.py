@@ -106,7 +106,7 @@ def update_employee(id, new_employee):
             EMPLOYEES[index] = new_employee
             break
 
-def get_employees_by_location(location):
+def get_employees_by_location(location_id):
 
     with sqlite3.connect("./kennel.db") as conn:
         conn.row_factory = sqlite3.Row
@@ -115,19 +115,19 @@ def get_employees_by_location(location):
         # Write the SQL query to get the information you want
         db_cursor.execute("""
         select
-            a.id,
-            a.name,
-            a.address,
-            a.location_id
-        from employee c
-        WHERE c.location = ?
-        """, ( location, ))
+            e.id,
+            e.name,
+            e.address,
+            e.location_id
+        from Employee e
+        WHERE e.location_id = ?
+        """, ( location_id, ))
 
         employees = []
         dataset = db_cursor.fetchall()
 
         for row in dataset:
-            employee = employee(row['id'], row['name'], row['address'], row['location_id'])
+            employee = Employee(row['id'], row['name'], row['address'], row['location_id'])
             employees.append(employee.__dict__)
 
     return json.dumps(employees)
