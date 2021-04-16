@@ -8,5 +8,4 @@ class Employee():
         self.name = name
         self.address = address
         self.location_id = location_id
-
-new_employee = Employee(1, "Jeremy Fromthatpearljamsong", "10 main", 1)
+        self.location = None
