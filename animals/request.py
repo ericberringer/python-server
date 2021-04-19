@@ -109,7 +109,8 @@ def create_animal(new_animal):
 
         # SQL query
         # Insert the new animal into the database, this will match my python db
-        # new_animal[] section needs to match the object in React
+        # new_animal[] section needs to match the object in React i.e. python server has location_id
+        # and react has location_id written as locationId
         db_cursor.execute("""
         INSERT INTO Animal
             ( name, breed, status, location_id, customer_id )
@@ -144,7 +145,7 @@ def delete_animal(id):
         WHERE id = ?
         """, (id, ))
 
-def update_animal(id, new_animal):
+def update_animal(id, updated_animal):
     with sqlite3.connect("./kennel.db") as conn:
         db_cursor = conn.cursor()
         # You should be able to identify a SQL query that is changing the state of a row in a database table.
@@ -159,9 +160,9 @@ def update_animal(id, new_animal):
                 location_id = ?,
                 customer_id = ?
         WHERE id = ?
-        """, (new_animal['name'], new_animal['breed'],
-              new_animal['status'], new_animal['location_id'],
-              new_animal['customer_id'], id, ))
+        """, (updated_animal['name'], updated_animal['breed'],
+              updated_animal['status'], updated_animal['location_id'],
+              updated_animal['customer_id'], id, ))
 
         # Were any rows affected?
         # Did the client send an `id` that exists?
