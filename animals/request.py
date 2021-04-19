@@ -1,4 +1,4 @@
-from models import Animal, customer
+from models import Animal
 from models import Location
 from models import Customer
 import sqlite3
@@ -103,21 +103,35 @@ def get_single_animal(id):
         return json.dumps(animal.__dict__)
 
 
-def create_animal(animal):
-    # Get the id value of the last animal in the list
-    max_id = ANIMALS[-1]["id"]
+def create_animal(new_animal):
+    with sqlite3.connect("./kennel.db") as conn:
+        db_cursor = conn.cursor()
 
-    # Add 1 to whatever that number is
-    new_id = max_id + 1
+        # SQL query
+        # Insert the new animal into the database, this will match my python db
+        # new_animal[] section needs to match the object in React i.e. python server has location_id
+        # and react has location_id written as locationId
+        db_cursor.execute("""
+        INSERT INTO Animal
+            ( name, breed, status, location_id, customer_id )
+        VALUES
+            ( ?, ?, ?, ?, ?);
+        """, (new_animal['name'], new_animal['breed'],
+              new_animal['status'], new_animal['locationId'],
+              new_animal['customerId'], ))
 
-    # Add an `id` property to the animal dictionary
-    animal["id"] = new_id
+        # The `lastrowid` property on the cursor will return
+        # the primary key of the last thing that got added to
+        # the database.
+        id = db_cursor.lastrowid
 
-    # Add the animal dictionary to the list
-    ANIMALS.append(animal)
+        # Add the `id` property to the animal dictionary that
+        # was sent by the client so that the client sees the
+        # primary key in the response.
+        new_animal['id'] = id
 
-    # Return the dictionary with `id` property added
-    return animal
+
+    return json.dumps(new_animal)
 
 def delete_animal(id):
     with sqlite3.connect("./kennel.db") as conn:
@@ -131,7 +145,7 @@ def delete_animal(id):
         WHERE id = ?
         """, (id, ))
 
-def update_animal(id, new_animal):
+def update_animal(id, updated_animal):
     with sqlite3.connect("./kennel.db") as conn:
         db_cursor = conn.cursor()
         # You should be able to identify a SQL query that is changing the state of a row in a database table.
@@ -146,9 +160,9 @@ def update_animal(id, new_animal):
                 location_id = ?,
                 customer_id = ?
         WHERE id = ?
-        """, (new_animal['name'], new_animal['breed'],
-              new_animal['status'], new_animal['location_id'],
-              new_animal['customer_id'], id, ))
+        """, (updated_animal['name'], updated_animal['breed'],
+              updated_animal['status'], updated_animal['location_id'],
+              updated_animal['customer_id'], id, ))
 
         # Were any rows affected?
         # Did the client send an `id` that exists?

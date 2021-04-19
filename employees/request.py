@@ -72,21 +72,30 @@ def get_single_employee(id):
 
         return json.dumps(employee.__dict__)
 
-def create_employee(employee):
-    # Get the id value of the last employee in the list
-    max_id = EMPLOYEES[-1]["id"]
+def create_employee(new_employee):
+    with sqlite3.connect("./kennel.db") as conn:
+        db_cursor = conn.cursor()
 
-    # Add 1 to whatever that number is
-    new_id = max_id + 1
+        # SQL query
+        # Insert the new employee into the database, this will match my python db
+        # new_employee[] section needs to match the object in React i.e. python server has location_id
+        # and react has location_id written as locationId
+        db_cursor.execute("""
+        INSERT INTO Employee
+            ( name, address, location_id )
+        VALUES
+            ( ?, ?, ?);
+        """, (new_employee['name'], new_employee['address'], new_employee['locationId'] ))
 
-    # Add an `id` property to the employee dictionary
-    employee["id"] = new_id
+        # The `lastrowid` property on the cursor will return
+        # the primary key of the last thing that got added to
+        # the database.
+        id = db_cursor.lastrowid
 
-    # Add the employee dictionary to the list
-    EMPLOYEES.append(employee)
-
-    # Return the dictionary with `id` property added
-    return employee
+        # Add the `id` property to the employee dictionary that
+        # was sent by the client so that the client sees the
+        # primary key in the response.
+        new_employee['id'] = id
 
 
 def delete_employee(id):
