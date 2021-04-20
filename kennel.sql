@@ -57,7 +57,7 @@ INSERT INTO `Animal` VALUES (null, "Falafel", "Treatment", "Siamese", 4, 2);
 INSERT INTO `Animal` VALUES (null, "Doodles", "Kennel", "Poodle", 3, 1);
 INSERT INTO `Animal` VALUES (null, "Daps", "Kennel", "Boxer", 2, 2);
 
--- This SELECT is embedding the locations and customers with the animals, the location_id of the animal matches the id of the location
+-- This SELECT/JOIN is embedding the locations and customers with the animals, the location_id of the animal matches the id of the location
 -- and the customer_id of the animal matches the id of the customer.
 SELECT
     a.id,
